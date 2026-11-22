@@ -286,11 +286,11 @@
                     <textarea id="custom-letter-input" rows="3" class="w-full bg-neutral-800 border border-white/10 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-white">Welcome to our very own private museum — built just for you today. Every frame on these walls holds a piece of my favorite memories with you. Happy Birthday Payal! Forever yours, Abhishek ❤️</textarea>
                 </div>
 
-                <!-- NEW: 3D Avatar Face Photo Uploader for Abhishek & Payal -->
+                <!-- 3D Avatar Face Photo Uploader for Abhishek & Payal -->
                 <div>
                     <label class="block text-xs font-medium text-neutral-300 mb-2">🧑🏽👩🏻 3D Character Faces (Upload Couple Photo or Individual Selfies)</label>
                     
-                    <!-- Couple Photo Auto-Extractor (handles sideways/landscape couple photos too!) -->
+                    <!-- Couple Photo Auto-Extractor -->
                     <div class="mb-3 p-3 rounded-xl border border-indigo-400/30 bg-indigo-950/30 flex items-center justify-between gap-3">
                         <div>
                             <p class="text-xs font-medium text-white">💑 Upload Your Couple Photo Together</p>
@@ -352,8 +352,9 @@
         </div>
     </div>
 
-    <!-- Hidden HTML5 Video Element for Continuous Cinema Wall Texture -->
+    <!-- Hidden HTML5 Video & Audio Elements -->
     <video id="memory-video" loop muted playsinline crossorigin="anonymous" class="hidden"></video>
+    <audio id="bg-music" loop preload="auto"></audio>
 
     <!-- ==================== 4. THREE.JS 3D MUSEUM ENGINE ==================== -->
     <script>
@@ -365,7 +366,6 @@
             const ctx = canvas.getContext('2d');
 
             if (styleType === 'autumn') {
-                // Warm autumn park bokeh background matching the main portrait in the video
                 const bg = ctx.createLinearGradient(0, 0, 960, 600);
                 bg.addColorStop(0, '#c86d2d');
                 bg.addColorStop(0.45, '#e89d4c');
@@ -373,7 +373,6 @@
                 ctx.fillStyle = bg;
                 ctx.fillRect(0, 0, 960, 600);
 
-                // Bokeh autumn leaves & golden sunlight circles
                 const bokehColors = ['rgba(255,220,140,0.35)', 'rgba(217,119,36,0.4)', 'rgba(180,60,20,0.35)', 'rgba(255,245,200,0.28)'];
                 for (let i = 0; i < 42; i++) {
                     ctx.fillStyle = bokehColors[i % bokehColors.length];
@@ -382,45 +381,36 @@
                     ctx.fill();
                 }
 
-                // Soft couple portrait silhouette embracing warmly
-                // Abhishek (left-center)
                 ctx.fillStyle = '#2d1e17';
                 ctx.beginPath();
                 ctx.ellipse(435, 490, 125, 165, 0, Math.PI, Math.PI * 2);
                 ctx.fill();
-                // Head
                 ctx.fillStyle = '#e5b896';
                 ctx.beginPath();
                 ctx.arc(435, 290, 62, 0, Math.PI * 2);
                 ctx.fill();
-                // Hair
                 ctx.fillStyle = '#1f1510';
                 ctx.beginPath();
                 ctx.arc(432, 276, 65, Math.PI * 0.95, Math.PI * 2.15);
                 ctx.fill();
 
-                // Payal (right-center leaning in)
                 ctx.fillStyle = '#8b1e24';
                 ctx.beginPath();
                 ctx.ellipse(545, 505, 115, 155, 0, Math.PI, Math.PI * 2);
                 ctx.fill();
-                // Long flowing hair
                 ctx.fillStyle = '#1a110d';
                 ctx.beginPath();
                 ctx.ellipse(548, 360, 74, 130, 0.08, 0, Math.PI * 2);
                 ctx.fill();
-                // Head
                 ctx.fillStyle = '#f2c8a8';
                 ctx.beginPath();
                 ctx.arc(542, 308, 56, 0, Math.PI * 2);
                 ctx.fill();
-                // Hair bangs
                 ctx.fillStyle = '#1a110d';
                 ctx.beginPath();
                 ctx.arc(542, 294, 58, Math.PI, Math.PI * 2.05);
                 ctx.fill();
             } else if (styleType === 'sunset') {
-                // Golden hour ocean sunset
                 const sky = ctx.createLinearGradient(0, 0, 0, 420);
                 sky.addColorStop(0, '#1e1b4b');
                 sky.addColorStop(0.45, '#be185d');
@@ -429,20 +419,17 @@
                 ctx.fillStyle = sky;
                 ctx.fillRect(0, 0, 960, 420);
 
-                // Glowing sun
                 ctx.fillStyle = 'rgba(254, 249, 195, 0.9)';
                 ctx.beginPath();
                 ctx.arc(480, 355, 68, 0, Math.PI * 2);
                 ctx.fill();
 
-                // Ocean reflection
                 const sea = ctx.createLinearGradient(0, 420, 0, 600);
                 sea.addColorStop(0, '#9a3412');
                 sea.addColorStop(1, '#1e1b4b');
                 ctx.fillStyle = sea;
                 ctx.fillRect(0, 420, 960, 180);
 
-                // Couple standing watching sunset
                 ctx.fillStyle = '#18181b';
                 ctx.beginPath();
                 ctx.arc(445, 370, 26, 0, Math.PI * 2);
@@ -451,7 +438,6 @@
                 ctx.fillRect(422, 396, 46, 140);
                 ctx.fillRect(488, 406, 44, 130);
             } else if (styleType === 'starry') {
-                // Midnight starry sky & city lights
                 const night = ctx.createLinearGradient(0, 0, 0, 600);
                 night.addColorStop(0, '#090d16');
                 night.addColorStop(0.65, '#1e293b');
@@ -459,7 +445,6 @@
                 ctx.fillStyle = night;
                 ctx.fillRect(0, 0, 960, 600);
 
-                // Stars
                 ctx.fillStyle = '#ffffff';
                 for (let i = 0; i < 90; i++) {
                     ctx.globalAlpha = 0.3 + (i % 7) * 0.1;
@@ -469,7 +454,6 @@
                 }
                 ctx.globalAlpha = 1;
 
-                // Crescent moon
                 ctx.fillStyle = '#fef3c7';
                 ctx.beginPath();
                 ctx.arc(740, 130, 38, 0, Math.PI * 2);
@@ -479,14 +463,12 @@
                 ctx.arc(755, 122, 34, 0, Math.PI * 2);
                 ctx.fill();
 
-                // Soft warm lantern glow around couple
                 const glow = ctx.createRadialGradient(480, 440, 10, 480, 440, 220);
                 glow.addColorStop(0, 'rgba(251, 191, 36, 0.38)');
                 glow.addColorStop(1, 'rgba(251, 191, 36, 0)');
                 ctx.fillStyle = glow;
                 ctx.fillRect(200, 220, 560, 380);
             } else {
-                // Warm studio editorial portrait background
                 const studio = ctx.createLinearGradient(0, 0, 960, 600);
                 studio.addColorStop(0, '#f5ebe0');
                 studio.addColorStop(0.5, '#e3d5ca');
@@ -494,7 +476,6 @@
                 ctx.fillStyle = studio;
                 ctx.fillRect(0, 0, 960, 600);
 
-                // Minimalist gallery arches
                 ctx.fillStyle = 'rgba(255,255,255,0.45)';
                 ctx.beginPath();
                 ctx.arc(480, 340, 230, Math.PI, 0);
@@ -504,7 +485,6 @@
                 ctx.fill();
             }
 
-            // Subtle museum caption overlay at bottom
             const bar = ctx.createLinearGradient(0, 470, 0, 600);
             bar.addColorStop(0, 'rgba(0,0,0,0)');
             bar.addColorStop(1, 'rgba(0,0,0,0.68)');
@@ -523,8 +503,9 @@
             return canvas;
         }
 
-        // Pre-configured Local Files from your folder (for museum.html)
+        // Pre-configured Local Files from your folder
         const PRESET_MEDIA = {
+            bgMusic: 'song.mp3',
             couplePhotoForFaces: 'photo_2026-03-26_23-13-49.jpg',
             cinemaVideo: 'video_2025-11-20_17-11-25.mp4',
             framePhotos: [
@@ -605,7 +586,6 @@
             }
         ];
 
-        // Convert canvases to dataURLs for modals/thumbnails
         galleryArtworks.forEach(art => {
             art.src = art.canvas.toDataURL('image/jpeg', 0.92);
         });
@@ -626,7 +606,7 @@
         renderer.outputEncoding = THREE.sRGBEncoding;
         container.appendChild(renderer.domElement);
 
-        // --- 3. BRIGHT GALLERY LIGHTING (MATCHING VIDEO) ---
+        // --- 3. BRIGHT GALLERY LIGHTING ---
         const hemiLight = new THREE.HemisphereLight(0xffffff, 0xd6d1c7, 0.92);
         hemiLight.position.set(0, 8, 0);
         scene.add(hemiLight);
@@ -646,7 +626,6 @@
         dirLight.shadow.bias = -0.0005;
         scene.add(dirLight);
 
-        // Warm gallery spotlights
         [
             [0, 5.2, -7.2],
             [-6.5, 5.2, -3.5],
@@ -659,25 +638,22 @@
             scene.add(pt);
         });
 
-        // --- 4. REALISTIC MUSEUM ARCHITECTURE (MATCHING VIDEO) ---
+        // --- 4. REALISTIC MUSEUM ARCHITECTURE ---
         const wallMat = new THREE.MeshStandardMaterial({ color: 0xf4f2ed, roughness: 0.88, metalness: 0.02 });
         const floorMat = new THREE.MeshStandardMaterial({ color: 0xe3dfd6, roughness: 0.55, metalness: 0.05 });
         const ceilingMat = new THREE.MeshStandardMaterial({ color: 0x161618, roughness: 0.9 });
         const trimMat = new THREE.MeshStandardMaterial({ color: 0xd8d3c8, roughness: 0.8 });
 
-        // Polished Light Museum Floor
         const floor = new THREE.Mesh(new THREE.PlaneGeometry(26, 26), floorMat);
         floor.rotation.x = -Math.PI / 2;
         floor.receiveShadow = true;
         scene.add(floor);
 
-        // Dark Architectural Gallery Ceiling (like the video)
         const ceiling = new THREE.Mesh(new THREE.PlaneGeometry(26, 26), ceilingMat);
         ceiling.rotation.x = Math.PI / 2;
         ceiling.position.y = 5.6;
         scene.add(ceiling);
 
-        // Ceiling Track Light Beams
         for (let z = -8; z <= 8; z += 5.5) {
             const track = new THREE.Mesh(
                 new THREE.BoxGeometry(20, 0.12, 0.18),
@@ -694,28 +670,22 @@
             mesh.receiveShadow = true;
             scene.add(mesh);
 
-            // Baseboard trim
             const base = new THREE.Mesh(new THREE.BoxGeometry(w + 0.02, 0.16, d + 0.02), trimMat);
             base.position.set(x, 0.08, z);
             scene.add(base);
             return mesh;
         }
 
-        // Outer Museum Perimeter Walls
-        createWall(24, 5.6, 0.4, 0, 2.8, -11);  // Back North Wall
-        createWall(24, 5.6, 0.4, 0, 2.8, 11);   // Front South Wall
-        createWall(0.4, 5.6, 22, -12, 2.8, 0);  // Left West Wall
-        createWall(0.4, 5.6, 22, 12, 2.8, 0);   // Right East Wall
-
-        // Center-Right Partition Wall (Matches the video's dividing gallery wall!)
+        createWall(24, 5.6, 0.4, 0, 2.8, -11);
+        createWall(24, 5.6, 0.4, 0, 2.8, 11);
+        createWall(0.4, 5.6, 22, -12, 2.8, 0);
+        createWall(0.4, 5.6, 22, 12, 2.8, 0);
         createWall(0.45, 5.6, 7.6, 4.4, 2.8, -1.8);
 
-        // Collision Helper: Keeps Abhishek, Payal & Camera safely inside all museum walls & furniture
         function clampInsideMuseum(pos, radius = 0.55) {
             pos.x = Math.max(-11.2 + radius, Math.min(11.2 - radius, pos.x));
             pos.z = Math.max(-10.1 + radius, Math.min(10.1 - radius, pos.z));
 
-            // Center-Right Partition Wall AABB (x: 4.4 ± 0.225, z: -1.8 ± 3.8)
             const pMinX = 4.175 - radius, pMaxX = 4.625 + radius;
             const pMinZ = -5.6 - radius, pMaxZ = 2.0 + radius;
             if (pos.x > pMinX && pos.x < pMaxX && pos.z > pMinZ && pos.z < pMaxZ) {
@@ -730,7 +700,6 @@
                 else pos.z = pMaxZ;
             }
 
-            // Center Display Pedestal AABB (x: 0 ± 1.15, z: -3.6 ± 0.58)
             const bMinX = -1.15 - radius, bMaxX = 1.15 + radius;
             const bMinZ = -4.18 - radius, bMaxZ = -3.02 + radius;
             if (pos.x > bMinX && pos.x < bMaxX && pos.z > bMinZ && pos.z < bMaxZ) {
@@ -748,7 +717,6 @@
         }
 
         // --- 5. PEDESTAL & "FOR PAYAL" PLAQUE + WOODEN BENCH ---
-        // Center White Display Pedestal (from video)
         const pedestal = new THREE.Mesh(
             new THREE.BoxGeometry(2.3, 1.0, 1.15),
             new THREE.MeshStandardMaterial({ color: 0xfaf9f6, roughness: 0.65 })
@@ -758,7 +726,6 @@
         pedestal.receiveShadow = true;
         scene.add(pedestal);
 
-        // Angled Plaque "For Payal" on Pedestal
         const plaqueCanvas = document.createElement('canvas');
         plaqueCanvas.width = 640;
         plaqueCanvas.height = 320;
@@ -786,7 +753,6 @@
         plaqueMesh.rotation.x = 0.28;
         scene.add(plaqueMesh);
 
-        // Wooden Gallery Bench in front of Main Portrait (Matches video!)
         const benchGroup = new THREE.Group();
         benchGroup.position.set(0, 0, -7.2);
         scene.add(benchGroup);
@@ -807,7 +773,7 @@
             benchGroup.add(leg);
         });
 
-        // --- 6. FRAMED ARTWORKS ON WALLS (DIRECT CANVAS TEXTURES) ---
+        // --- 6. FRAMED ARTWORKS ON WALLS ---
         const clickableFrames = [];
 
         function createArtworkFrame(artObj, width, height, x, y, z, rotY = 0) {
@@ -815,7 +781,6 @@
             group.position.set(x, y, z);
             group.rotation.y = rotY;
 
-            // Sleek Black Gallery Frame
             const frameMesh = new THREE.Mesh(
                 new THREE.BoxGeometry(width + 0.18, height + 0.18, 0.09),
                 new THREE.MeshStandardMaterial({ color: 0x161618, roughness: 0.45 })
@@ -823,14 +788,12 @@
             frameMesh.castShadow = true;
             group.add(frameMesh);
 
-            // White Passe-Partout Matting
             const matMesh = new THREE.Mesh(
                 new THREE.BoxGeometry(width + 0.06, height + 0.06, 0.1),
                 new THREE.MeshBasicMaterial({ color: 0xfafaf9 })
             );
             group.add(matMesh);
 
-            // Direct CanvasTexture so it renders 100% reliably right away
             const texture = new THREE.CanvasTexture(artObj.canvas);
             texture.minFilter = THREE.LinearFilter;
             const photoMat = new THREE.MeshBasicMaterial({ map: texture });
@@ -844,35 +807,23 @@
             scene.add(group);
         }
 
-        // 1. Main Hero Portrait above Bench (Matches video's big center frame)
         createArtworkFrame(galleryArtworks[0], 4.4, 2.55, 0, 2.65, -10.68, 0);
-
-        // Flanking Portraits on Back Wall
         createArtworkFrame(galleryArtworks[1], 2.7, 1.85, -5.8, 2.55, -10.68, 0);
         createArtworkFrame(galleryArtworks[2], 2.7, 1.85, 5.8, 2.55, -10.68, 0);
-
-        // 2. Partition Wall Portraits (Matching the side-by-side frames in the video)
         createArtworkFrame(galleryArtworks[3], 1.75, 1.45, 4.72, 2.45, -3.1, Math.PI / 2);
         createArtworkFrame(galleryArtworks[4], 1.75, 1.45, 4.72, 2.45, -0.5, Math.PI / 2);
-
-        // 3. Outer Left Wall Portraits (2 frames)
         createArtworkFrame(galleryArtworks[5], 3.0, 1.95, -11.68, 2.5, 4.5, Math.PI / 2);
         createArtworkFrame(galleryArtworks[6], 3.0, 1.95, -11.68, 2.5, -4.5, Math.PI / 2);
-
-        // 4. Outer Right Wall Portraits (2 frames)
         createArtworkFrame(galleryArtworks[7], 3.0, 1.95, 11.68, 2.5, -4.5, -Math.PI / 2);
         createArtworkFrame(galleryArtworks[8], 3.0, 1.95, 11.68, 2.5, 4.5, -Math.PI / 2);
-
-        // 5. Front Entrance Wall Portrait
         createArtworkFrame(galleryArtworks[9], 3.2, 2.0, -5.8, 2.5, 10.68, Math.PI);
 
-        // --- DEDICATED CONTINUOUS VIDEO CINEMA SCREEN (FRONT-RIGHT WALL) ---
+        // --- DEDICATED CONTINUOUS VIDEO CINEMA SCREEN ---
         const cinemaGroup = new THREE.Group();
         cinemaGroup.position.set(5.4, 2.55, 10.66);
         cinemaGroup.rotation.y = Math.PI;
         scene.add(cinemaGroup);
 
-        // Sleek Cinema Bezel
         const cinemaBezel = new THREE.Mesh(
             new THREE.BoxGeometry(5.2, 3.0, 0.16),
             new THREE.MeshStandardMaterial({ color: 0x111113, roughness: 0.35 })
@@ -880,7 +831,6 @@
         cinemaBezel.castShadow = true;
         cinemaGroup.add(cinemaBezel);
 
-        // Animated Fallback Romantic Reel Canvas (runs continuously even before user uploads an MP4)
         const videoReelCanvas = document.createElement('canvas');
         videoReelCanvas.width = 960;
         videoReelCanvas.height = 540;
@@ -897,7 +847,6 @@
         cinemaScreenMesh.position.z = 0.09;
         cinemaGroup.add(cinemaScreenMesh);
 
-        // Glowing "NOW PLAYING" badge above Cinema Screen
         const badgeCanvas = document.createElement('canvas');
         badgeCanvas.width = 512;
         badgeCanvas.height = 64;
@@ -951,7 +900,6 @@
             videoReelTexture.needsUpdate = true;
         }
 
-        // Handle Custom Cinema Wall Video Upload
         document.getElementById('cinema-video-input').addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (!file) return;
@@ -967,7 +915,6 @@
             }).catch(() => {});
         });
 
-        // Pre-load your local Cinema Wall Video automatically on startup
         if (PRESET_MEDIA.cinemaVideo) {
             memoryVideoEl.src = encodeURI(PRESET_MEDIA.cinemaVideo);
             memoryVideoEl.addEventListener('loadeddata', () => {
@@ -982,15 +929,15 @@
             });
         }
 
-        // --- 7. REALISTIC ARTICULATED 3D AVATARS (ABHISHEK & PAYAL FROM YOUR PHOTO) ---
+        // --- 7. REALISTIC ARTICULATED 3D AVATARS ---
         function createStripedShirtTexture() {
             const c = document.createElement('canvas');
             c.width = 256;
             c.height = 256;
             const ctx = c.getContext('2d');
-            ctx.fillStyle = '#1b3668'; // Deep navy blue shirt from photo
+            ctx.fillStyle = '#1b3668';
             ctx.fillRect(0, 0, 256, 256);
-            ctx.fillStyle = 'rgba(191, 219, 254, 0.42)'; // Subtle vertical pinstripes
+            ctx.fillStyle = 'rgba(191, 219, 254, 0.42)';
             for (let x = 0; x < 256; x += 14) {
                 ctx.fillRect(x, 0, 2, 256);
             }
@@ -1005,7 +952,7 @@
             c.width = 256;
             c.height = 256;
             const ctx = c.getContext('2d');
-            ctx.fillStyle = '#f8fafc'; // White shawl/dupatta from photo
+            ctx.fillStyle = '#f8fafc';
             ctx.fillRect(0, 0, 256, 256);
             ctx.fillStyle = 'rgba(39, 39, 42, 0.35)';
             for (let y = 12; y < 256; y += 24) {
@@ -1031,7 +978,6 @@
             const shoeMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.4 });
             const soleMat = new THREE.MeshStandardMaterial({ color: 0x27272a, roughness: 0.8 });
 
-            // Pelvis / Hips Pivot
             const hips = new THREE.Group();
             hips.position.y = 0.94;
             root.add(hips);
@@ -1041,7 +987,6 @@
             pelvisMesh.castShadow = true;
             hips.add(pelvisMesh);
 
-            // Waist & Chest (Anatomical Taper)
             const torsoGroup = new THREE.Group();
             torsoGroup.position.y = 0.09;
             hips.add(torsoGroup);
@@ -1055,7 +1000,6 @@
             waist.castShadow = true;
             torsoGroup.add(waist);
 
-            // White patterned dupatta/shawl draped over Payal's left shoulder (matching photo!)
             if (hasDupatta) {
                 const dupattaMat = new THREE.MeshStandardMaterial({ map: createDupattaTexture(), roughness: 0.6 });
                 const dupatta = new THREE.Mesh(new THREE.CylinderGeometry(0.164, 0.145, 0.43, 20, 1, false, 0.2, Math.PI * 0.88), dupattaMat);
@@ -1066,7 +1010,6 @@
                 torsoGroup.add(dupatta);
             }
 
-            // Button-down shirt collar for Abhishek
             if (!isFemale) {
                 const collar = new THREE.Mesh(new THREE.TorusGeometry(0.074, 0.017, 10, 20), topMat);
                 collar.rotation.x = Math.PI / 2.2;
@@ -1074,13 +1017,11 @@
                 torsoGroup.add(collar);
             }
 
-            // Neck
             const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.052, 0.058, 0.11, 14), skinMat);
             neck.position.y = 0.47;
             neck.castShadow = true;
             torsoGroup.add(neck);
 
-            // Sculpted Head & Facial Features
             const headGroup = new THREE.Group();
             headGroup.position.y = 0.62;
             torsoGroup.add(headGroup);
@@ -1090,7 +1031,6 @@
             cranium.castShadow = true;
             headGroup.add(cranium);
 
-            // Photo-Mapped Face Overlay Mesh (Activated when user uploads a real selfie!)
             const facePhotoGeo = new THREE.SphereGeometry(0.168, 28, 24, Math.PI * 0.16, Math.PI * 0.68, Math.PI * 0.22, Math.PI * 0.56);
             const facePhotoMat = new THREE.MeshStandardMaterial({
                 transparent: true,
@@ -1105,13 +1045,11 @@
             const facialFeaturesGroup = new THREE.Group();
             headGroup.add(facialFeaturesGroup);
 
-            // Subtle Nose & Warm Smile
             const nose = new THREE.Mesh(new THREE.ConeGeometry(0.018, 0.045, 10), skinMat);
             nose.rotation.x = Math.PI / 2.4;
             nose.position.set(0, -0.01, 0.158);
             facialFeaturesGroup.add(nose);
 
-            // Signature Mustache for Abhishek (matching photo!)
             if (hasMustache) {
                 const stacheLeft = new THREE.Mesh(new THREE.BoxGeometry(0.036, 0.013, 0.014), hairMat);
                 stacheLeft.position.set(-0.017, -0.036, 0.155);
@@ -1130,7 +1068,6 @@
             smile.position.set(0, -0.056, 0.148);
             facialFeaturesGroup.add(smile);
 
-            // Eyes with Whites, Expressive Dark Irises & Thick Eyebrows
             const eyeWhiteMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
             const irisMat = new THREE.MeshBasicMaterial({ color: 0x1a110d });
             [-1, 1].forEach(side => {
@@ -1143,14 +1080,12 @@
                 iris.position.set(side * 0.054, 0.018, 0.152);
                 facialFeaturesGroup.add(iris);
 
-                // Eyebrow
                 const brow = new THREE.Mesh(new THREE.BoxGeometry(0.045, hasMustache ? 0.011 : 0.008, 0.011), hairMat);
                 brow.position.set(side * 0.054, 0.049, 0.146);
                 brow.rotation.z = side * -0.05;
                 facialFeaturesGroup.add(brow);
             });
 
-            // Hair Styling
             const hairCap = new THREE.Mesh(
                 new THREE.SphereGeometry(0.175, 24, 24, 0, Math.PI * 2, 0, Math.PI * 0.56),
                 hairMat
@@ -1162,7 +1097,6 @@
             headGroup.add(hairCap);
 
             if (isFemale) {
-                // Long dark brown hair flowing over shoulders (matching Payal in photo!)
                 const backHair = new THREE.Mesh(new THREE.CylinderGeometry(0.168, 0.19, 0.56, 18), hairMat);
                 backHair.scale.set(1.04, 1, 0.65);
                 backHair.position.set(0, -0.18, -0.06);
@@ -1176,14 +1110,12 @@
                     headGroup.add(sideLock);
                 });
             } else {
-                // Full styled dark hair crop for Abhishek
                 const fringe = new THREE.Mesh(new THREE.SphereGeometry(0.148, 16, 12), hairMat);
                 fringe.scale.set(1.12, 0.52, 0.68);
                 fringe.position.set(0, 0.125, 0.075);
                 headGroup.add(fringe);
             }
 
-            // Articulated Arms (Shoulder -> Upper Arm -> Elbow -> Forearm -> Hand)
             function makeArm(side) {
                 const shoulder = new THREE.Group();
                 shoulder.position.set(side * (isFemale ? 0.195 : 0.225), 0.41, 0);
@@ -1216,7 +1148,6 @@
             const leftArm = makeArm(-1);
             const rightArm = makeArm(1);
 
-            // Articulated Legs (Hip -> Thigh -> Knee -> Shin -> Sneaker)
             function makeLeg(side) {
                 const hipJoint = new THREE.Group();
                 hipJoint.position.set(side * 0.085, 0.92, 0);
@@ -1257,7 +1188,6 @@
             return { root, hips, torsoGroup, headGroup, facePhotoMesh, facialFeaturesGroup, skinMat, leftArm, rightArm, leftLeg, rightLeg };
         }
 
-        // Abhishek (Navy blue striped shirt, mustache, dark hair, dark trousers — styled from your photo!)
         const abhishek = createAvatar({
             skinColor: 0xd6a17a,
             hairColor: 0x1a120e,
@@ -1272,7 +1202,6 @@
         abhishek.root.rotation.y = Math.PI;
         scene.add(abhishek.root);
 
-        // Payal (Black top with white patterned dupatta, long dark brown hair — styled from your photo!)
         const payal = createAvatar({
             skinColor: 0xe6b48e,
             hairColor: 0x261710,
@@ -1336,9 +1265,9 @@
             bubbleAbhishek.classList.remove('hidden');
             document.getElementById('joystick-zone').classList.remove('hidden');
             state.started = true;
+            playBackgroundMusic();
         });
 
-        // Keyboard Listeners
         window.addEventListener('keydown', (e) => {
             state.keys[e.code] = true;
         });
@@ -1346,7 +1275,6 @@
             state.keys[e.code] = false;
         });
 
-        // Mouse & Touch Camera Drag Rotation + Wheel Zoom
         let isDragging = false;
         let prevMouse = { x: 0, y: 0 };
 
@@ -1374,12 +1302,10 @@
             state.camDist = Math.max(1.8, Math.min(8.5, state.camDist + e.deltaY * 0.004));
         }, { passive: false });
 
-        // Click Painting to Zoom In OR Click Floor to Walk There with Mouse
         const raycaster = new THREE.Raycaster();
         const pointerNDC = new THREE.Vector2();
         let downPos = { x: 0, y: 0 };
 
-        // Subtle glowing destination ring on floor when clicking to walk
         const walkMarker = new THREE.Mesh(
             new THREE.RingGeometry(0.18, 0.28, 32),
             new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide, transparent: true, opacity: 0.75 })
@@ -1402,7 +1328,6 @@
             pointerNDC.y = -(e.clientY / window.innerHeight) * 2 + 1;
             raycaster.setFromCamera(pointerNDC, camera);
 
-            // 1. Check if user clicked a painting frame
             const frameHits = raycaster.intersectObjects(clickableFrames);
             if (frameHits.length > 0) {
                 const idx = frameHits[0].object.userData.artworkIndex;
@@ -1414,7 +1339,6 @@
                 return;
             }
 
-            // 2. Otherwise check if user clicked the museum floor to walk there
             const floorHits = raycaster.intersectObject(floor);
             if (floorHits.length > 0) {
                 const pt = clampInsideMuseum(floorHits[0].point.clone(), 0.75);
@@ -1462,7 +1386,6 @@
             state.joyY = dy / maxR;
         }
 
-        // Dance Together Toggle
         document.getElementById('btn-dance').addEventListener('click', () => {
             if (state.isSitting) {
                 state.isSitting = false;
@@ -1476,7 +1399,6 @@
             }
         });
 
-        // Bench Sit / Stand Toggle (Realistic 90-degree Hip + Knee Bend!)
         function toggleBenchSit() {
             state.isDancing = false;
             state.isSitting = !state.isSitting;
@@ -1503,17 +1425,14 @@
         document.getElementById('btn-bench').addEventListener('click', toggleBenchSit);
         document.getElementById('context-action-btn').addEventListener('click', toggleBenchSit);
 
-        // Chat Cycle Button
         document.getElementById('btn-chat').addEventListener('click', () => {
             state.chatIndex = (state.chatIndex + 1) % romanticDialogues.length;
             const d = romanticDialogues[state.chatIndex];
             setChatBubble(d.payal, d.abhishek);
         });
 
-        // Love Note Modal
         document.getElementById('btn-love-note').addEventListener('click', () => openModal('note-modal'));
 
-        // Customizer Modal
         function openCustomizer() {
             renderPhotoSlots();
             openModal('customizer-modal');
@@ -1527,7 +1446,6 @@
             display.innerHTML = lines.map(line => `<p>${line.replace(/</g, "&lt;")}</p>`).join('');
         });
 
-        // Apply Uploaded Real Face Photo to 3D Avatar + Match Skin Tone Automatically
         function applyFaceImageToAvatar(imgSource, previewId, avatarObj, cropRect = null) {
             const faceCanvas = document.createElement('canvas');
             faceCanvas.width = 512;
@@ -1545,7 +1463,6 @@
 
             document.getElementById(previewId).src = faceCanvas.toDataURL('image/jpeg', 0.92);
 
-            // Sample average center skin tone so the 3D head/neck/hands match the photo!
             const pixelData = fCtx.getImageData(216, 216, 80, 80).data;
             let r = 0, g = 0, b = 0, count = 0;
             for (let i = 0; i < pixelData.length; i += 16) {
@@ -1556,7 +1473,6 @@
             }
             avatarObj.skinMat.color.setRGB((r / count) / 255, (g / count) / 255, (b / count) / 255);
 
-            // Soft radial edge feathering so the photo blends seamlessly into the 3D head
             fCtx.globalCompositeOperation = 'destination-in';
             const mask = fCtx.createRadialGradient(256, 256, 130, 256, 256, 248);
             mask.addColorStop(0, 'rgba(0,0,0,1)');
@@ -1589,7 +1505,6 @@
         setupAvatarFaceUploader('face-input-abhishek', 'preview-face-abhishek', abhishek);
         setupAvatarFaceUploader('face-input-payal', 'preview-face-payal', payal);
 
-        // Couple Photo Auto-Extractor (rotates sideways portrait photos automatically & maps both faces!)
         let uploadedCoupleImg = null;
         let coupleRotationDeg = 0;
 
@@ -1604,7 +1519,6 @@
             rCtx.rotate((coupleRotationDeg * Math.PI) / 180);
             rCtx.drawImage(uploadedCoupleImg, -uploadedCoupleImg.width / 2, -uploadedCoupleImg.height / 2);
 
-            // Also update the main hero frame #1 with their upright couple photo!
             const mainArt = galleryArtworks[0];
             mainArt.src = rotCanvas.toDataURL('image/jpeg', 0.92);
             const mCtx = mainArt.canvas.getContext('2d');
@@ -1613,7 +1527,6 @@
             mainArt.meshMaterial.map.needsUpdate = true;
             renderPhotoSlots();
 
-            // Crop Payal (left side) & Abhishek (right side) faces from the upright couple photo
             const w = rotCanvas.width;
             const h = rotCanvas.height;
             const cropSize = Math.min(w * 0.36, h * 0.36);
@@ -1639,7 +1552,6 @@
                 const img = new Image();
                 img.onload = () => {
                     uploadedCoupleImg = img;
-                    // Auto-rotate 90° clockwise if uploaded in portrait orientation sideways
                     coupleRotationDeg = img.height > img.width ? 90 : 0;
                     document.getElementById('rotate-couple-btn').classList.remove('hidden');
                     processUploadedCouplePhoto();
@@ -1654,7 +1566,6 @@
             processUploadedCouplePhoto();
         });
 
-        // Pre-load all 10 local gallery photos & 3D character faces from your folder
         function preloadLocalMediaFiles() {
             PRESET_MEDIA.framePhotos.forEach((filename, idx) => {
                 if (!filename || !galleryArtworks[idx]) return;
@@ -1663,7 +1574,6 @@
                 img.onload = () => {
                     const ctx = art.canvas.getContext('2d');
                     ctx.clearRect(0, 0, art.canvas.width, art.canvas.height);
-                    // Auto-rotate sideways portrait photos upright if needed
                     if (idx === 0 && img.height > img.width) {
                         ctx.save();
                         ctx.translate(art.canvas.width / 2, art.canvas.height / 2);
@@ -1694,7 +1604,6 @@
         }
         preloadLocalMediaFiles();
 
-        // Render Photo Upload Slots in Customizer
         function renderPhotoSlots() {
             const grid = document.getElementById('photo-slots-grid');
             grid.innerHTML = '';
@@ -1744,40 +1653,32 @@
             el.classList.remove('flex');
         }
 
-        // Gentle Web Audio Ambient Piano Melody
-        let audioCtx = null;
+        // Background Song Controller
+        const bgMusicEl = document.getElementById('bg-music');
+        bgMusicEl.src = encodeURIComponent(PRESET_MEDIA.bgMusic);
+        bgMusicEl.volume = 0.6;
         let isMusicPlaying = false;
-        let musicInterval = null;
+
+        function playBackgroundMusic() {
+            bgMusicEl.play().then(() => {
+                isMusicPlaying = true;
+                document.getElementById('music-icon').textContent = '🔊 Music On';
+            }).catch((err) => {
+                console.warn('Audio failed to play. Make sure song.mp3 is in the same folder:', err);
+            });
+        }
+
+        function pauseBackgroundMusic() {
+            bgMusicEl.pause();
+            isMusicPlaying = false;
+            document.getElementById('music-icon').textContent = '🔇 Music';
+        }
 
         document.getElementById('music-toggle').addEventListener('click', () => {
             if (!isMusicPlaying) {
-                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                if (audioCtx.state === 'suspended') audioCtx.resume();
-                const notes = [261.63, 329.63, 392.00, 493.88, 523.25, 493.88, 392.00, 329.63];
-                let step = 0;
-                const playNote = () => {
-                    if (!isMusicPlaying) return;
-                    const osc = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
-                    osc.type = 'sine';
-                    osc.frequency.value = notes[step % notes.length];
-                    gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.045, audioCtx.currentTime + 0.15);
-                    gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1.8);
-                    osc.connect(gain);
-                    gain.connect(audioCtx.destination);
-                    osc.start();
-                    osc.stop(audioCtx.currentTime + 1.9);
-                    step++;
-                };
-                isMusicPlaying = true;
-                playNote();
-                musicInterval = setInterval(playNote, 900);
-                document.getElementById('music-icon').textContent = '🔊 Music On';
+                playBackgroundMusic();
             } else {
-                isMusicPlaying = false;
-                clearInterval(musicInterval);
-                document.getElementById('music-icon').textContent = '🔇 Music';
+                pauseBackgroundMusic();
             }
         });
 
@@ -1854,7 +1755,6 @@
                 return;
             }
 
-            // Reset posture
             avatar.hips.rotation.y = 0;
             avatar.torsoGroup.rotation.x = 0;
             avatar.torsoGroup.rotation.y = 0;
@@ -1885,7 +1785,6 @@
                 avatar.rightArm.shoulder.rotation.x = sinW * 0.38;
                 avatar.rightArm.elbow.rotation.x = -0.25 - Math.max(0, -sinW) * 0.25;
             } else {
-                // Subtle natural idle breathing
                 const breathe = Math.sin(time * 2.2 + phaseOffset);
                 avatar.hips.position.y = 0.94 + breathe * 0.008;
                 avatar.torsoGroup.rotation.x = breathe * 0.015;
@@ -1907,7 +1806,6 @@
 
             updateContinuousVideoCanvas(elapsed);
 
-            // Handle Walking Movement (Keyboard, Joystick, or Mouse Click-to-Walk)
             let moveX = state.joyX;
             let moveZ = state.joyY;
             if (state.keys['KeyW'] || state.keys['ArrowUp']) moveZ -= 1;
@@ -1955,7 +1853,6 @@
                 clampInsideMuseum(abhishek.root.position, 0.65);
                 abhishek.root.rotation.y = Math.atan2(moveDir.x, moveDir.z);
 
-                // Payal walks gracefully beside Abhishek and stays inside walls
                 const sideOffset = new THREE.Vector3(-moveDir.z, 0, moveDir.x).multiplyScalar(1.05);
                 const targetPayal = abhishek.root.position.clone().add(sideOffset);
                 clampInsideMuseum(targetPayal, 0.65);
@@ -1967,7 +1864,6 @@
             animateAvatarPose(abhishek, isMoving, elapsed, 0);
             animateAvatarPose(payal, isMoving, elapsed, 0.45);
 
-            // Show "Sit down / Stand up" pill when near the bench
             const distToBench = abhishek.root.position.distanceTo(benchGroup.position);
             const promptEl = document.getElementById('context-prompt');
             if (state.started && (distToBench < 2.6 || state.isSitting)) {
@@ -1976,7 +1872,6 @@
                 promptEl.classList.add('hidden');
             }
 
-            // Smooth Third-Person Orbit Camera with Wall Raycast Collision (never goes behind walls!)
             const targetCenter = new THREE.Vector3(
                 (abhishek.root.position.x + payal.root.position.x) * 0.5,
                 1.5,
@@ -1990,7 +1885,6 @@
             );
 
             const idealCamPos = targetCenter.clone().add(idealOffset);
-            // Keep camera inside museum outer perimeter & ceiling/floor so it never clips outside!
             idealCamPos.x = Math.max(-11.35, Math.min(11.35, idealCamPos.x));
             idealCamPos.z = Math.max(-10.35, Math.min(10.35, idealCamPos.z));
             idealCamPos.y = Math.max(0.55, Math.min(5.1, idealCamPos.y));
@@ -1998,7 +1892,6 @@
             camera.position.lerp(idealCamPos, 0.15);
             camera.lookAt(targetCenter);
 
-            // Update 2D Screen Positions of Floating Name Tags & Speech Bubbles
             if (state.started) {
                 projectToScreen(
                     new THREE.Vector3(payal.root.position.x, payal.root.position.y + 1.98, payal.root.position.z),
@@ -2013,7 +1906,6 @@
             renderer.render(scene, camera);
         }
 
-        // Responsive Window Resize
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
