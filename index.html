@@ -352,8 +352,10 @@
         </div>
     </div>
 
-    <!-- Hidden HTML5 Video & Audio Elements -->
+    <!-- Hidden HTML5 Video Element for Continuous Cinema Wall Texture -->
     <video id="memory-video" loop muted playsinline crossorigin="anonymous" class="hidden"></video>
+
+    <!-- Hidden HTML5 Audio Element for Background Song -->
     <audio id="bg-music" loop preload="auto"></audio>
 
     <!-- ==================== 4. THREE.JS 3D MUSEUM ENGINE ==================== -->
@@ -503,9 +505,12 @@
             return canvas;
         }
 
-        // Pre-configured Local Files from your folder
+        // =========================================================================
+        // PRE-CONFIGURED LOCAL FILES FROM YOUR GITHUB REPOSITORY
+        // 👇 PUT YOUR EXACT SONG FILENAME INSIDE `backgroundSong` BELOW 👇
+        // =========================================================================
         const PRESET_MEDIA = {
-            bgMusic: 'song.mp3',
+            backgroundSong: 'song.mp3', // <--- REPLACE WITH YOUR EXACT SONG FILENAME FROM GITHUB
             couplePhotoForFaces: 'photo_2026-03-26_23-13-49.jpg',
             cinemaVideo: 'video_2025-11-20_17-11-25.mp4',
             framePhotos: [
@@ -1248,7 +1253,79 @@
             msgAbhishek.textContent = abhishekText;
         }
 
-        // Start Experience Button
+        // --- BACKGROUND MUSIC ENGINE (PLAYS YOUR MP3 SONG + FALLBACK PIANO) ---
+        const bgMusicEl = document.getElementById('bg-music');
+        let audioCtx = null;
+        let isMusicPlaying = false;
+        let musicInterval = null;
+        let usingCustomSong = false;
+
+        if (PRESET_MEDIA.backgroundSong) {
+            bgMusicEl.src = encodeURI(PRESET_MEDIA.backgroundSong);
+            bgMusicEl.volume = 0.65;
+            usingCustomSong = true;
+            bgMusicEl.addEventListener('error', () => {
+                // If the song filename isn't found, gracefully fall back to the piano melody
+                usingCustomSong = false;
+            });
+        }
+
+        function startFallbackPiano() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const notes = [261.63, 329.63, 392.00, 493.88, 523.25, 493.88, 392.00, 329.63];
+            let step = 0;
+            const playNote = () => {
+                if (!isMusicPlaying) return;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.value = notes[step % notes.length];
+                gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.045, audioCtx.currentTime + 0.15);
+                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1.8);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 1.9);
+                step++;
+            };
+            playNote();
+            musicInterval = setInterval(playNote, 900);
+        }
+
+        function startMusic() {
+            if (isMusicPlaying) return;
+            isMusicPlaying = true;
+            document.getElementById('music-icon').textContent = '🔊 Music On';
+
+            if (usingCustomSong && bgMusicEl.src) {
+                bgMusicEl.play().catch(() => {
+                    // Fallback to piano if the MP3 couldn't play
+                    usingCustomSong = false;
+                    startFallbackPiano();
+                });
+            } else {
+                startFallbackPiano();
+            }
+        }
+
+        function stopMusic() {
+            isMusicPlaying = false;
+            document.getElementById('music-icon').textContent = '🔇 Music';
+            bgMusicEl.pause();
+            if (musicInterval) {
+                clearInterval(musicInterval);
+                musicInterval = null;
+            }
+        }
+
+        document.getElementById('music-toggle').addEventListener('click', () => {
+            if (!isMusicPlaying) startMusic();
+            else stopMusic();
+        });
+
+        // Start Experience Button (Also starts your background song automatically!)
         document.getElementById('start-btn').addEventListener('click', () => {
             if (document.getElementById('fullscreen-check').checked && document.documentElement.requestFullscreen) {
                 document.documentElement.requestFullscreen().catch(() => {});
@@ -1265,9 +1342,12 @@
             bubbleAbhishek.classList.remove('hidden');
             document.getElementById('joystick-zone').classList.remove('hidden');
             state.started = true;
-            playBackgroundMusic();
+
+            // Start playing your song right when Start is clicked
+            startMusic();
         });
 
+        // Keyboard Listeners
         window.addEventListener('keydown', (e) => {
             state.keys[e.code] = true;
         });
@@ -1275,6 +1355,7 @@
             state.keys[e.code] = false;
         });
 
+        // Mouse & Touch Camera Drag Rotation + Wheel Zoom
         let isDragging = false;
         let prevMouse = { x: 0, y: 0 };
 
@@ -1302,6 +1383,7 @@
             state.camDist = Math.max(1.8, Math.min(8.5, state.camDist + e.deltaY * 0.004));
         }, { passive: false });
 
+        // Click Painting to Zoom In OR Click Floor to Walk There with Mouse
         const raycaster = new THREE.Raycaster();
         const pointerNDC = new THREE.Vector2();
         let downPos = { x: 0, y: 0 };
@@ -1386,6 +1468,7 @@
             state.joyY = dy / maxR;
         }
 
+        // Dance Together Toggle
         document.getElementById('btn-dance').addEventListener('click', () => {
             if (state.isSitting) {
                 state.isSitting = false;
@@ -1399,6 +1482,7 @@
             }
         });
 
+        // Bench Sit / Stand Toggle
         function toggleBenchSit() {
             state.isDancing = false;
             state.isSitting = !state.isSitting;
@@ -1652,35 +1736,6 @@
             el.classList.add('hidden');
             el.classList.remove('flex');
         }
-
-        // Background Song Controller
-        const bgMusicEl = document.getElementById('bg-music');
-        bgMusicEl.src = encodeURIComponent(PRESET_MEDIA.bgMusic);
-        bgMusicEl.volume = 0.6;
-        let isMusicPlaying = false;
-
-        function playBackgroundMusic() {
-            bgMusicEl.play().then(() => {
-                isMusicPlaying = true;
-                document.getElementById('music-icon').textContent = '🔊 Music On';
-            }).catch((err) => {
-                console.warn('Audio failed to play. Make sure song.mp3 is in the same folder:', err);
-            });
-        }
-
-        function pauseBackgroundMusic() {
-            bgMusicEl.pause();
-            isMusicPlaying = false;
-            document.getElementById('music-icon').textContent = '🔇 Music';
-        }
-
-        document.getElementById('music-toggle').addEventListener('click', () => {
-            if (!isMusicPlaying) {
-                playBackgroundMusic();
-            } else {
-                pauseBackgroundMusic();
-            }
-        });
 
         // --- 9. MAIN ANIMATION LOOP ---
         const clock = new THREE.Clock();
